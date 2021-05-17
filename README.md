@@ -1,1 +1,2 @@
-2021-1_Cpp_SankeGame
+# Issue 2  
+* 1단계의 맵 위에 Snake를 표시하고, 화살표를 입력받아 Snake가 움직이도록 프로그램을 완성
