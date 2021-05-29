@@ -70,15 +70,17 @@ int main() {
     initscr();
     start_color();
     keypad(stdscr, TRUE);
+    curs_set(0);
     init_pair(1, COLOR_RED, COLOR_WHITE);
     box(stdscr, 0, 0);
     attron(COLOR_PAIR(1));
     wbkgd(stdscr, COLOR_PAIR(1));
-
+    int row, col;
+    getmaxyx(stdscr, row, col);
     clock_t begin, end;
 
     // 기본윈도우내의서브윈도우생성
-    WINDOW *win = subwin(stdscr, 30, 180, 10, 10);
+    WINDOW *win = subwin(stdscr, row, col, 0, 0);
     init_pair(2, COLOR_BLACK, COLOR_BLUE);
     box(win, 0, 0);
     attron(COLOR_PAIR(2));
