@@ -54,13 +54,21 @@ int main() {
 
   // sudo apt install libncursesw5-dev
   // 2-wide unicode characters for map display
-  const wchar_t* map_chars[] = {
-    L"\u3000", // "　"
-    L"\u2B1B", // "⬛"
-    L"\u2B1C", // "⬜"
-    L"\u3267", // "㉧"
-    L"\u26AB", // "⚫"
-    L"\uFF1F"  // "？"
+  // const wchar_t* map_chars[] = {
+  //   L"\u3000", // "　"
+  //   L"\u2B1B", // "⬛"
+  //   L"\u2B1C", // "⬜"
+  //   L"\u3267", // "㉧"
+  //   L"\u26AB", // "⚫"
+  //   L"\uFF1F"  // "？"
+  // };
+  const char* map_chars[] = {
+    "\u3000", // "　"
+    "\u2B1B", // "⬛"
+    "\u2B1C", // "⬜"
+    "\u3267", // "㉧"
+    "\u26AB", // "⚫"
+    "\uFF1F"  // "？"
   };
 
   load_level();
@@ -68,22 +76,22 @@ int main() {
     for (int j = 0; j < WIDTH; j++) {
       switch (map_data[i][j]) {
         case '0':
-          mvaddwstr(i, j, map_chars[0]); // '　'
+          mvaddstr(i, j, map_chars[0]); // '　'
           break;
         case '1':
-          mvaddwstr(i, j, map_chars[1]); // '⬛'
+          mvaddstr(i, j, map_chars[1]); // '⬛'
           break;
         case '2':
-          mvaddwstr(i, j, map_chars[2]); // '⬜'
+          mvaddstr(i, j, map_chars[2]); // '⬜'
           break;
         case '3':
-          mvaddwstr(i, j, map_chars[3]); // '㉧'
+          mvaddstr(i, j, map_chars[3]); // '㉧'
           break;
         case '4':
-          mvaddwstr(i, j, map_chars[4]); // '⚫'
+          mvaddstr(i, j, map_chars[4]); // '⚫'
           break;
         default:
-          mvaddwstr(i, j, map_chars[5]); // '？', error
+          mvaddstr(i, j, map_chars[5]); // '？', error
           break;
       }
     }
