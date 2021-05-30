@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <ncurses.h>
 
 using namespace std;
@@ -47,51 +48,57 @@ int main() {
   noecho();
   // to capture special keystrokes
   keypad(stdscr, TRUE);
+  // start ncurses color
+  start_color();
 
-  // int row,col;
-  // getmaxyx(stdscr,row,col);
-  // mvprintw(row-2,0,"This screen has %d rows and %d columns\n",row,col);
+  // definition for ncurses color pair id
+  #define COLOR_ID_EMPTY      0
+  #define COLOR_ID_WALL       1
+  #define COLOR_ID_IWALL      2
+  #define COLOR_ID_SNAKE_HEAD 3
+  #define COLOR_ID_SNAKE_BODY 4
 
-  // sudo apt install libncursesw5-dev
-  // 2-wide unicode characters for map display
-  // const wchar_t* map_chars[] = {
-  //   L"\u3000", // "　"
-  //   L"\u2B1B", // "⬛"
-  //   L"\u2B1C", // "⬜"
-  //   L"\u3267", // "㉧"
-  //   L"\u26AB", // "⚫"
-  //   L"\uFF1F"  // "？"
-  // };
-  const char* map_chars[] = {
-    "\u3000", // "　"
-    "\u2B1B", // "⬛"
-    "\u2B1C", // "⬜"
-    "\u3267", // "㉧"
-    "\u26AB", // "⚫"
-    "\uFF1F"  // "？"
-  };
-
+  // initialize color pair
+  // init_pair(pair_id, foreground_color, background_color)
+  init_pair(COLOR_ID_EMPTY, COLOR_BLACK, COLOR_BLACK);
+  init_pair(COLOR_ID_WALL, COLOR_BLACK, COLOR_WHITE);
+  init_pair(COLOR_ID_IWALL, COLOR_BLACK, COLOR_YELLOW);
+  init_pair(COLOR_ID_SNAKE_HEAD, COLOR_WHITE, COLOR_GREEN);
+  init_pair(COLOR_ID_SNAKE_BODY, COLOR_BLACK, COLOR_GREEN);
+  
+  // load level
   load_level();
+  // loop map_data and display map
   for (int i = 0; i < HEIGHT; i++) {
     for (int j = 0; j < WIDTH; j++) {
       switch (map_data[i][j]) {
         case '0':
-          mvaddstr(i, j, map_chars[0]); // '　'
+          attron(COLOR_PAIR(COLOR_ID_EMPTY));
+          mvaddstr(i, 2*j, "  "); // empty space
+          attroff(COLOR_PAIR(COLOR_ID_EMPTY));
           break;
         case '1':
-          mvaddstr(i, j, map_chars[1]); // '⬛'
+          attron(COLOR_PAIR(COLOR_ID_WALL));
+          mvaddstr(i, 2*j, "  "); // wall
+          attroff(COLOR_PAIR(COLOR_ID_WALL));
           break;
         case '2':
-          mvaddstr(i, j, map_chars[2]); // '⬜'
+          attron(COLOR_PAIR(COLOR_ID_IWALL));
+          mvaddstr(i, 2*j, "  "); // immune wall
+          attroff(COLOR_PAIR(COLOR_ID_IWALL));
           break;
         case '3':
-          mvaddstr(i, j, map_chars[3]); // '㉧'
+          attron(COLOR_PAIR(COLOR_ID_SNAKE_HEAD));
+          mvaddstr(i, 2*j, "<>"); // snake head
+          attroff(COLOR_PAIR(COLOR_ID_SNAKE_HEAD));
           break;
         case '4':
-          mvaddstr(i, j, map_chars[4]); // '⚫'
+          attron(COLOR_PAIR(COLOR_ID_SNAKE_BODY));
+          mvaddstr(i, 2*j, "  "); // snake body
+          attroff(COLOR_PAIR(COLOR_ID_SNAKE_BODY));
           break;
         default:
-          mvaddstr(i, j, map_chars[5]); // '？', error
+          mvaddstr(i, 2*j, "??"); // display error
           break;
       }
     }
