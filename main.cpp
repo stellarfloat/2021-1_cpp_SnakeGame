@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <locale.h>
+#include <curses.h>
 #include <ncurses.h>
 #include <deque>
 #include <time.h>
@@ -7,38 +10,97 @@
 
 using namespace std;
 
-// int kbhit(void)
-// {
-//   struct timeval tv;
-//   fd_set read_fd;
+#define WIDTH 21
+#define HEIGHT 21
 
-//   /* Do not wait at all, not even a microsecond */
-//   tv.tv_sec=0;
-//   tv.tv_usec=0;
+int map_data[HEIGHT][WIDTH]; // temporary global map data
 
-//   /* Must be done first to initialize read_fd */
-//   FD_ZERO(&read_fd);
+// const char* map_chars[] = { 
+//     "\u3000", // "　"
+//     "\u2B1B", // "⬛"
+//     "\u2B1C", // "⬜"
+//     "\u3267", // "㉧"
+//     "\u26AB", // "⚫"
+//     "\uFF1F"  // "？" 
+// };
 
-//   /* Makes select() ask if input is ready:
-//    * 0 is the file descriptor for stdin    */
-//   FD_SET(0,&read_fd);
+const wchar_t* map_chars[] = {
+    L"\u3000", // "　"
+    L"\u2B1B", // "⬛"
+    L"\u2B1C", // "⬜"
+    L"\u3267", // "㉧"
+    L"\u26AB", // "⚫"
+    L"\uFF1F"  // "？"
+};
 
-//   /* The first parameter is the number of the
-//    * largest file descriptor to check + 1. */
-//   if(select(1, &read_fd,NULL, /*No writes*/NULL, /*No exceptions*/&tv) == -1)
-//     return 0;  /* An error occured */
+void load_level() { //char**& map_data
+    ifstream lv_data;
 
-//   /*  read_fd now holds a bit map of files that are
-//    * readable. We test the entry for the standard
-//    * input (file 0). */
+    lv_data.open("LevelData/test.txt");
   
-// if(FD_ISSET(0,&read_fd))
-//     /* Character pending on stdin */
-//     return 1;
+    if (lv_data.fail()) {
+        cerr << "loading error" << endl;
+        return;
+    }
+  
+    int h = 0;
+    while (!lv_data.eof()) {
+        char temp[25];
+        lv_data.getline(temp, 25);
+        for (int i = 0; i < WIDTH; i++)
+            map_data[h][i] = (temp[i] - '0');
+        h++;
+    }
+}
 
-//   /* no characters were pending */
-//   return 0;
-// }
+void print_map() {
+    clear();
+    for (int i = 0; i < HEIGHT; i++) {
+        for (int j = 0; j < WIDTH; j++) {
+            // switch (map_data[i][j]) {
+            //     case 0:
+            //         mvaddstr(i, j, map_chars[0]); // '　'
+            //         break;
+            //     case 1:
+            //         mvaddstr(i, j, map_chars[1]); // '⬛'
+            //         break;
+            //     case 2:
+            //         mvaddstr(i, j, map_chars[2]); // '⬜'
+            //         break;
+            //     case 3:
+            //         mvaddstr(i, j, map_chars[3]); // '㉧'
+            //         break;
+            //     case 4:
+            //         mvaddstr(i, j, map_chars[4]); // '⚫'
+            //         break;
+            //     default:
+            //         mvaddstr(i, j, map_chars[5]); // '？', error
+            //         break;
+            // }
+            switch(map_data[i][j]) {
+            case 0:
+                mvaddstr(i, j, " ");
+                break;
+            case 1:
+                mvaddstr(i, j, "#");
+                break;
+            case 2:
+                mvaddstr(i, j, "$");
+                break;
+            case 3:
+                mvaddstr(i, j, "*");
+                break;
+            case 4:
+                mvaddstr(i, j, "@");
+                break;
+            default:
+                mvaddstr(i, j, "?");
+                break;
+            }
+        }
+    }
+    refresh();
+}
 
 class Snake {
 public:
@@ -47,22 +109,13 @@ public:
     int size, headRow, headCol;
     deque<pair<int, int>> body;
 
-    Snake(WINDOW* w) {
+    Snake(int row=10, int col=9) {
         dir = 'l';
-        getmaxyx(w, headRow, headCol);
-        headRow /= 2;
-        headCol /= 2;
+        headRow = row;
+        headCol = col;
         size = 5;
-        for(int i = 0; i <size ; i++)
+        for(int i = 0; i < size ; i++)
             body.push_back(make_pair(headRow, headCol + i));
-    }
-
-    void print(WINDOW* w) {
-        wclear(w);
-        for(int i = 0; i < size; i++) {
-            mvwprintw(w, body[i].first, body[i].second, "*");
-        }
-        wrefresh(w);
     }
 
     bool isEnd() { return gameEnd; }
@@ -95,56 +148,49 @@ public:
         else if(dir == 'r') body.insert(body.begin(), make_pair(body[0].first, body[0].second + 1));
         else if(dir == 'u') body.insert(body.begin(), make_pair(body[0].first - 1, body[0].second));
         else if(dir == 'd') body.insert(body.begin(), make_pair(body[0].first + 1, body[0].second));
+
+        if(map_data[body.front().first][body.front().second] != 0) {
+            gameEnd = true;
+            return;
+        }
+        map_data[body.front().first][body.front().second] = 3;
+        for(int i = 1; i < body.size() - 1; i++)
+            map_data[body[i].first][body[i].second] = 4;
+        map_data[body.back().first][body.back().second] = 0;
         body.pop_back();
+
     }
 
 };
 
 int main() {
+    setlocale(LC_ALL, "");
+
+    // load map data
+    load_level();
+   
+    // make window
     initscr();
-    start_color();
     keypad(stdscr, TRUE);
     curs_set(0);
-    init_pair(1, COLOR_RED, COLOR_WHITE);
-    box(stdscr, 0, 0);
-    attron(COLOR_PAIR(1));
-    wbkgd(stdscr, COLOR_PAIR(1));
     int row, col;
     getmaxyx(stdscr, row, col);
-    clock_t begin, end;
 
-    // 기본윈도우내의서브윈도우생성
-    WINDOW *win = subwin(stdscr, row, col, 0, 0);
-    init_pair(2, COLOR_BLACK, COLOR_BLUE);
-    box(win, 0, 0);
-    attron(COLOR_PAIR(2));
-    wbkgd(win, COLOR_PAIR(2));
-    refresh();
+    // make user
+    Snake user = Snake();
 
-    Snake user = Snake(win);
-    user.print(win);
-
-    int ch;
     while(1) {
+        print_map();
         sleep(1);
         if(kbhit()) {
             user.setDir();
         }
         user.update();
-        user.print(win);
-
         if(user.isEnd())
             break;
     }
 
-    int win_row, win_col;
-    getmaxyx(win, win_row, win_col);
-    wclear(win);
-    mvwprintw(win, win_row / 2, win_col / 2, "THE END");
-    wrefresh(win);
-    
     getch();
-    delwin(win);
     endwin();
     return 0;
 }
