@@ -1,12 +1,14 @@
 #include <iostream>
-#include <stdlib.h>
 #include <fstream>
+#include <deque>
+#include <time.h>
+#include <stdlib.h>
+
 #include <locale.h>
 #include <curses.h>
 #include <ncurses.h>
-#include <deque>
-#include <time.h>
 #include <unistd.h>
+
 #include "kbhit.h"
 
 #include <chrono>
@@ -170,26 +172,94 @@ public:
     }
 
     void update() {
-        if (dir == 'l') body.insert(body.begin(), make_pair(body[0].first, body[0].second - 1));
+        if(dir == 'l') body.insert(body.begin(), make_pair(body[0].first, body[0].second - 1));
         else if (dir == 'r') body.insert(body.begin(), make_pair(body[0].first, body[0].second + 1));
         else if (dir == 'u') body.insert(body.begin(), make_pair(body[0].first - 1, body[0].second));
         else if (dir == 'd') body.insert(body.begin(), make_pair(body[0].first + 1, body[0].second));
 
-        if (map_data[body.front().first][body.front().second] != 0) {
+        int row = body.front().first, col = body.front().second;
+        if(map_data[row][col] != 0 && map_data[row][col] != 5 && map_data[row][col] != 6) {
             gameEnd = true;
             return;
         }
+
+        bool getGROWTH = false;
+        bool getPOSION = false;
+        if(map_data[row][col] == 5) getGROWTH = true;
+        if(map_data[row][col] == 6) getPOSION = true;
+        
         map_data[body.front().first][body.front().second] = 3;
-        for (int i = 1; i < body.size() - 1; i++)
+        for(int i = 1; i < body.size() - 1; i++)
             map_data[body[i].first][body[i].second] = 4;
         map_data[body.back().first][body.back().second] = 0;
-        body.pop_back();
-
+        if(!getGROWTH) body.pop_back();
+        if(getPOSION) {
+            map_data[body.back().first][body.back().second] = 0;
+            body.pop_back();
+            if(body.size() < 3) gameEnd = true;
+        }
     }
 
 };
 
+struct ItemInfo {
+    int row;
+    int col;
+    int info; // 0 GROWTH, 1 POISON
+    clock_t makeTime;
+};
+
+class ItemManager {
+public:
+    deque<ItemInfo> itemList;
+    int rndWeight;
+
+    ItemManager() { itemList.clear(); rndWeight = 0; }
+    void makeItem() {
+        if(itemList.size() == 3) return;
+        int check = rand() % (5 - rndWeight);
+        if(check != 0) {
+            rndWeight++;
+            return;
+        }
+        rndWeight = 0;
+        if(itemList.size() < 3) {
+            ItemInfo it;
+            it.info = rand() % 2;
+            while(1) {
+                it.row = rand() % HEIGHT;
+                it.col = rand() % WIDTH;
+                if(map_data[it.row][it.col] == 0) {
+                    map_data[it.row][it.col] = 5 + it.info;
+                    break;
+                }
+            }
+            it.makeTime = clock();
+            itemList.push_back(it);
+        }
+    }
+    void delItem() {
+        for(int i = 0; i < itemList.size(); i++) {
+            if(map_data[itemList[i].row][itemList[i].col] == 0) {
+                if(i == 0) itemList.pop_front();
+                if(i == 1) { itemList[1] = itemList[2]; itemList.pop_back(); }
+                else itemList.pop_back();
+            }
+        }
+
+        while(1) {
+            ItemInfo tmp = itemList.front();
+            if((double)(tmp.makeTime - clock()) / CLOCKS_PER_SEC > 0.1) {
+                map_data[tmp.row][tmp.col] = 0;
+                itemList.pop_front();
+            } else { break; }
+        }
+    }
+};
+
 int main() {
+    srand(time(NULL));
+    
     // load map data
     load_level();
 
@@ -203,15 +273,20 @@ int main() {
     // make user
     Snake user = Snake();
 
+    ItemManager item = ItemManager();
+
     while (1) {
+        item.delItem();
+        item.makeItem();
         print_map();
-        sleep_for(chrono::milliseconds(500));
+        if (user.isEnd())
+            break;
+        sleep_for(chrono::milliseconds(250));
         if (kbhit()) {
             user.setDir();
         }
         user.update();
-        if (user.isEnd())
-            break;
+       
     }
 
     getch();
