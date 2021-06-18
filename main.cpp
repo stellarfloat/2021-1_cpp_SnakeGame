@@ -104,6 +104,21 @@ void print_map() {
                 mvaddstr(i, 2*j, "  "); // snake body
                 attroff(COLOR_PAIR(COLOR_ID_SNAKE_BODY));
                 break;
+            case 5:
+                attron(COLOR_PAIR(COLOR_ID_ITEM_GROWTH));
+                mvaddstr(i, 2*j, "++"); // growth item
+                attroff(COLOR_PAIR(COLOR_ID_ITEM_GROWTH));
+                break;
+            case 6:
+                attron(COLOR_PAIR(COLOR_ID_ITEM_POISON));
+                mvaddstr(i, 2*j, "--"); // poison item
+                attroff(COLOR_PAIR(COLOR_ID_ITEM_POISON));
+                break;
+            case 7:
+                attron(COLOR_PAIR(COLOR_ID_GATE));
+                mvaddstr(i, 2*j, "  "); // gate
+                attroff(COLOR_PAIR(COLOR_ID_GATE));
+                break;
             default:
                 mvaddstr(i, 2*j, "??"); // display error
                 break;
