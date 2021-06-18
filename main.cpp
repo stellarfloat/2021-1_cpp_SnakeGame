@@ -202,57 +202,66 @@ public:
 
 };
 
+#define itemListLength 3
+
 struct ItemInfo {
     int row;
     int col;
     int info; // 0 GROWTH, 1 POISON
+    bool ttl;
+    bool first;
     clock_t makeTime;
 };
 
 class ItemManager {
 public:
-    deque<ItemInfo> itemList;
+    ItemInfo itemList[3];
     int rndWeight;
 
-    ItemManager() { itemList.clear(); rndWeight = 0; }
+    ItemManager() { 
+        for(int i = 0; i < itemListLength; i++) {
+            itemList[i].col = 0;
+            itemList[i].row = 0;
+            itemList[i].info = 0;
+            itemList[i].ttl = false;
+            itemList[i].first = false;
+            itemList[i].makeTime = 0;
+        }
+        rndWeight = 0;
+    }
     void makeItem() {
-        if(itemList.size() == 3) return;
         int check = rand() % (5 - rndWeight);
         if(check != 0) {
             rndWeight++;
             return;
         }
         rndWeight = 0;
-        if(itemList.size() < 3) {
-            ItemInfo it;
-            it.info = rand() % 2;
-            while(1) {
-                it.row = rand() % HEIGHT;
-                it.col = rand() % WIDTH;
-                if(map_data[it.row][it.col] == 0) {
-                    map_data[it.row][it.col] = 5 + it.info;
-                    break;
-                }
+        ItemInfo it;
+        it.info = rand() % 2;
+        while(1) {
+            it.row = rand() % HEIGHT;
+            it.col = rand() % WIDTH;
+            if(map_data[it.row][it.col] == 0)
+                break;
+        }
+        it.first = true;
+        it.ttl = true;
+        it.makeTime = clock();
+        for(int i = 0; i < itemListLength; i++) {
+            if(!itemList[i].ttl) {
+                map_data[it.row][it.col] = it.info + 5;
+                itemList[i] = it;
+                break;
             }
-            it.makeTime = clock();
-            itemList.push_back(it);
         }
     }
     void delItem() {
-        for(int i = 0; i < itemList.size(); i++) {
-            if(map_data[itemList[i].row][itemList[i].col] == 0) {
-                if(i == 0) itemList.pop_front();
-                if(i == 1) { itemList[1] = itemList[2]; itemList.pop_back(); }
-                else itemList.pop_back();
+        for(int i = 0; i < itemListLength; i++) {
+            double res = (double)(clock() - itemList[i].makeTime) / CLOCKS_PER_SEC;
+            if(map_data[itemList[i].row][itemList[i].col] == 0 || res > 0.015) {
+                itemList[i].ttl = false;
+                map_data[itemList[i].row][itemList[i].col] = 0;
             }
-        }
-
-        while(1) {
-            ItemInfo tmp = itemList.front();
-            if((double)(tmp.makeTime - clock()) / CLOCKS_PER_SEC > 0.1) {
-                map_data[tmp.row][tmp.col] = 0;
-                itemList.pop_front();
-            } else { break; }
         }
     }
 };
@@ -276,8 +285,6 @@ int main() {
     ItemManager item = ItemManager();
 
     while (1) {
-        item.delItem();
-        item.makeItem();
         print_map();
         if (user.isEnd())
             break;
@@ -286,7 +293,8 @@ int main() {
             user.setDir();
         }
         user.update();
-       
+        item.makeItem();
+        item.delItem();
     }
 
     getch();
