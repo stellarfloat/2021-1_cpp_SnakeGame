@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include <fstream>
 #include <locale.h>
 #include <curses.h>
@@ -8,32 +9,17 @@
 #include <unistd.h>
 #include "kbhit.h"
 
-using namespace std;
+#include <chrono>
+#include <thread>
 
+using namespace std;
+using this_thread::sleep_for;
 #define WIDTH 21
 #define HEIGHT 21
 
 int map_data[HEIGHT][WIDTH]; // temporary global map data
 
-// const char* map_chars[] = { 
-//     "\u3000", // "　"
-//     "\u2B1B", // "⬛"
-//     "\u2B1C", // "⬜"
-//     "\u3267", // "㉧"
-//     "\u26AB", // "⚫"
-//     "\uFF1F"  // "？" 
-// };
-
-const wchar_t* map_chars[] = {
-    L"\u3000", // "　"
-    L"\u2B1B", // "⬛"
-    L"\u2B1C", // "⬜"
-    L"\u3267", // "㉧"
-    L"\u26AB", // "⚫"
-    L"\uFF1F"  // "？"
-};
-
-void load_level() { //char**& map_data
+void load_level() {
     ifstream lv_data;
 
     lv_data.open("LevelData/test.txt");
@@ -57,26 +43,6 @@ void print_map() {
     clear();
     for (int i = 0; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
-            // switch (map_data[i][j]) {
-            //     case 0:
-            //         mvaddstr(i, j, map_chars[0]); // '　'
-            //         break;
-            //     case 1:
-            //         mvaddstr(i, j, map_chars[1]); // '⬛'
-            //         break;
-            //     case 2:
-            //         mvaddstr(i, j, map_chars[2]); // '⬜'
-            //         break;
-            //     case 3:
-            //         mvaddstr(i, j, map_chars[3]); // '㉧'
-            //         break;
-            //     case 4:
-            //         mvaddstr(i, j, map_chars[4]); // '⚫'
-            //         break;
-            //     default:
-            //         mvaddstr(i, j, map_chars[5]); // '？', error
-            //         break;
-            // }
             switch(map_data[i][j]) {
             case 0:
                 mvaddstr(i, j, " ");
@@ -164,8 +130,6 @@ public:
 };
 
 int main() {
-    setlocale(LC_ALL, "");
-
     // load map data
     load_level();
    
@@ -181,7 +145,7 @@ int main() {
 
     while(1) {
         print_map();
-        sleep(1);
+        sleep_for(chrono::milliseconds(500));
         if(kbhit()) {
             user.setDir();
         }
