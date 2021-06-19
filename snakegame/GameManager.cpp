@@ -1,15 +1,15 @@
+#include <chrono>
+#include <thread>
 #include <ncurses.h>
 
-#include "GameConfig.hpp"
 #include "GameManager.hpp"
 #include "MapData.hpp"
+#include "kbhit.hpp"
+
 
 MapData *map;
 
 GameManager::GameManager() {
-  map = new MapData();
-  map->load("snakegame/LevelData/test.txt");
-
   // initialize curses routines
   initscr();
   // One-character-a-time. disable the buffering of typed characters 
@@ -21,7 +21,6 @@ GameManager::GameManager() {
   keypad(stdscr, TRUE);
   // start ncurses color
   start_color();
-
   // initialize color pair
   // init_pair(pair_id, foreground_color, background_color)
   init_pair(COLOR_ID_EMPTY, COLOR_BLACK, COLOR_BLACK);
@@ -33,18 +32,35 @@ GameManager::GameManager() {
   init_pair(COLOR_ID_ITEM_POISON, COLOR_WHITE, COLOR_RED);
   init_pair(COLOR_ID_GATE, COLOR_WHITE, COLOR_MAGENTA);
 
+  // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
+  map = new MapData();
+  map->load("snakegame/LevelData/test.txt");
+
+  // pass the pointer to enable direct access to the map data
+  item = new ItemManager(map);
+  snake = new Snake(map);
 }
 
 GameManager::~GameManager() {
-
+  //delete snake;
+  delete item;
+  delete map;
+  endwin();
 }
 
 void GameManager::update() {
+  t = clock();
+  if (kbhit()) { snake->setDir(); }
+  item->update(t);
+  snake->update();
 
+  std::this_thread::sleep_for(std::chrono::milliseconds(GAMETICK_DELAY));
+
+  if (snake->isDead()) { running = false; }
 }
 
 void GameManager::render() {
-  clear();
+  //clear();
   for (int i = 0; i < HEIGHT; i++) {
     for (int j = 0; j < WIDTH; j++) {
       switch (map->getData(i, j)) {

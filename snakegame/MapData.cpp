@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include "MapData.hpp"
-#include "GameConfig.hpp"
 
 
 MapData::MapData() {

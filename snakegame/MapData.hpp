@@ -1,3 +1,6 @@
+#ifndef _MAPDATA_H_
+#define _MAPDATA_H_
+
 #include <string>
 
 #include "GameConfig.hpp"
@@ -15,3 +18,4 @@ public:
   int getData(int i, int j);               // 인덱스 기반 맵데이터 접근
   void setData(int i, int j, int newData); // 인덱스 기반 맵데이터 조작
 };
+#endif

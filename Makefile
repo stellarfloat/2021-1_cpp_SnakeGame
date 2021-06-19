@@ -1,2 +1,2 @@
 all:
-	g++ snakegame/main.cpp snakegame/kbhit.cpp -lncurses -o /tmp/snakegame.out && /tmp/snakegame.out
+	g++ snakegame/main.cpp snakegame/GameManager.cpp snakegame/MapData.cpp snakegame/ItemManager.cpp snakegame/SnakeManager.cpp snakegame/kbhit.cpp -lncurses -o /tmp/snakegame.out && /tmp/snakegame.out

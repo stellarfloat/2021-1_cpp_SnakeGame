@@ -26,3 +26,8 @@
 // init_pair(COLOR_ID_ITEM_POISON, COLOR_WHITE, COLOR_RED);
 // init_pair(COLOR_ID_GATE, COLOR_WHITE, COLOR_MAGENTA);
 
+// maximum item count on the map
+#define MAX_ITEM_SIZE 3
+
+// gametick length (ms)
+#define GAMETICK_DELAY 250
