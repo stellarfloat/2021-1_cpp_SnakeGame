@@ -1,4 +1,4 @@
-#include "kbhit.h"
+#include "kbhit.hpp"
 
 int kbhit(void) {
     struct timeval tv;

@@ -9,7 +9,7 @@
 #include <ncurses.h>
 #include <unistd.h>
 
-#include "kbhit.h"
+#include "kbhit.hpp"
 
 #include <chrono>
 #include <thread>
@@ -24,7 +24,7 @@ int map_data[HEIGHT][WIDTH]; // temporary global map data
 void load_level() {
     ifstream lv_data;
 
-    lv_data.open("LevelData/test.txt");
+    lv_data.open("snakegame/LevelData/test.txt");
 
     if (lv_data.fail()) {
         cerr << "loading error" << endl;
@@ -64,8 +64,8 @@ void init_display() {
     #define COLOR_ID_ITEM_POISON 6
     #define COLOR_ID_GATE        7
 
-// initialize color pair
-// init_pair(pair_id, foreground_color, background_color)
+    // initialize color pair
+    // init_pair(pair_id, foreground_color, background_color)
     init_pair(COLOR_ID_EMPTY, COLOR_BLACK, COLOR_BLACK);
     init_pair(COLOR_ID_WALL, COLOR_BLACK, COLOR_WHITE);
     init_pair(COLOR_ID_IWALL, COLOR_BLACK, COLOR_WHITE);
