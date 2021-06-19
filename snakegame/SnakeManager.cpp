@@ -6,7 +6,7 @@
 Snake::Snake(MapData *map, int row, int col) {
   this->map = map;
 
-  dir = 'l';
+  dir = 0;
   headRow = row;
   headCol = col;
   size = 5;
@@ -18,19 +18,19 @@ void Snake::setDir() {
   int key = getch();
   switch (key) {
   case KEY_LEFT:
-    if (dir != 'r') dir = 'l';
+    if (dir != 2) dir = 0;
     else dead = true;
     break;
   case KEY_RIGHT:
-    if (dir != 'l') dir = 'r';
+    if (dir != 0) dir = 2;
     else dead = true;
     break;
   case KEY_UP:
-    if (dir != 'd') dir = 'u';
+    if (dir != 3) dir = 1;
     else dead = true;
     break;
   case KEY_DOWN:
-    if (dir != 'u') dir = 'd';
+    if (dir != 1) dir = 3;
     else dead = true;
     break;
   }
