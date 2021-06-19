@@ -12,7 +12,7 @@ char map_data[HEIGHT][WIDTH]; // temporary global map data
 void load_level() { //char**& map_data
   ifstream lv_data;
 
-  lv_data.open("LevelData/test.txt");
+  lv_data.open("snakegame/LevelData/test.txt");
   
   if (lv_data.fail()) {
     cerr << "loading error" << endl;
