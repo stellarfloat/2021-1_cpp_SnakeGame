@@ -37,7 +37,7 @@ public:
 
     GateManager() { wallList.clear(); onManager = false; usingGate = false; open = false; gateIdx = make_pair(-1, -1); delTime = time(NULL); }
     void managerOn(int sz, time_t t) {
-        if(sz >= 7 || (double)(time(NULL) - t) >= 1)
+        if(sz >= 7 || (double)(time(NULL) - t) >= 20)
             onManager = true;
     }
     void makeGate() {
