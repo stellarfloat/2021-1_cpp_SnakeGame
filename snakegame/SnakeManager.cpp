@@ -37,32 +37,95 @@ void Snake::setDir() {
   return;
 }
 
-void Snake::update() {
-  if (dir == 'l') body.insert(body.begin(), std::make_pair(body[0].first, body[0].second - 1));
-  else if (dir == 'r') body.insert(body.begin(), std::make_pair(body[0].first, body[0].second + 1));
-  else if (dir == 'u') body.insert(body.begin(), std::make_pair(body[0].first - 1, body[0].second));
-  else if (dir == 'd') body.insert(body.begin(), std::make_pair(body[0].first + 1, body[0].second));
+void Snake::update(GateManager& wall) {
+  // if (dir == 'l') body.insert(body.begin(), std::make_pair(body[0].first, body[0].second - 1));
+  // else if (dir == 'r') body.insert(body.begin(), std::make_pair(body[0].first, body[0].second + 1));
+  // else if (dir == 'u') body.insert(body.begin(), std::make_pair(body[0].first - 1, body[0].second));
+  // else if (dir == 'd') body.insert(body.begin(), std::make_pair(body[0].first + 1, body[0].second));
 
-  int row = body.front().first, col = body.front().second;
-  int map_data = map->getData(row, col);
-  if (map_data != 0 && map_data != 5 && map_data != 6) {
-    dead = true;
-    return;
-  }
+  // int row = body.front().first, col = body.front().second;
+  // int map_data = map->getData(row, col);
+  // if (map_data != 0 && map_data != 5 && map_data != 6) {
+  //   dead = true;
+  //   return;
+  // }
 
+  // bool getGROWTH = false;
+  // bool getPOSION = false;
+  // if (map_data == 5) getGROWTH = true;
+  // if (map_data == 6) getPOSION = true;
+
+  // map->setData(body.front().first, body.front().second, 3);
+  // for (int i = 1; i < body.size() - 1; i++)
+  //   map->setData(body[i].first, body[i].second, 4);
+  // map->setData(body.back().first, body.back().second, 0);
+  // if (!getGROWTH) body.pop_back();
+  // if (getPOSION) {
+  //   map->setData(body.back().first, body.back().second, 0);
+  //   body.pop_back();
+  //   if (body.size() < 3) dead = true;
+  // }
   bool getGROWTH = false;
   bool getPOSION = false;
-  if (map_data == 5) getGROWTH = true;
-  if (map_data == 6) getPOSION = true;
+  body.push_front(std::make_pair(body[0].first + axisID[dir].first, body[0].second + axisID[dir].second));
+  int row = body.front().first, col = body.front().second;
+  int map_data_id = map->getData(row, col);
 
+  // 충돌에 의한 게임 종료
+  if(map_data_id == 1 || map_data_id == 4) {
+      dead = true;
+      return;
+  }
+  // Gate 사용
+  if(map_data_id == 7) {
+      inGateAxis = std::make_pair(row, col);
+      body.pop_front();
+      wall.setGateUsage(true);
+      int a = wall.gateIdx.first, b = wall.gateIdx.second;
+      std::pair<int, int> GateAxis = (std::make_pair(row, col) == wall.wallList[a]) ? wall.wallList[b] : wall.wallList[a];
+      int outDir = dir;
+      for(int i = 0; i < 4; i++) {
+          int outRow = GateAxis.first + axisID[outDir].first;
+          int outCol = GateAxis.second + axisID[outDir].second;
+          int map_data_id = map->getData(outRow, outCol);
+          if(outRow >= 0 && outRow <= HEIGHT && outCol >= 0 && outCol <= WIDTH && map_data_id != 1 && map_data_id != 2 && map_data_id != 4) {
+              this->dir = outDir;
+              body.push_front(std::make_pair(outRow, outCol));
+              break;
+          }
+          if(++outDir == 4) outDir = 0;
+      } 
+  }
+
+  // 아이템 획득 판단
+  row = body.front().first, col = body.front().second;
+  map_data_id = map->getData(row, col);
+  if(map_data_id == 5) getGROWTH = true;
+  if(map_data_id == 6) getPOSION = true;
   map->setData(body.front().first, body.front().second, 3);
-  for (int i = 1; i < body.size() - 1; i++)
-    map->setData(body[i].first, body[i].second, 4);
+  for(int i = 1; i < body.size() - 1; i++)
+      map->setData(body[i].first, body[i].second, 4);
   map->setData(body.back().first, body.back().second, 0);
-  if (!getGROWTH) body.pop_back();
-  if (getPOSION) {
-    map->setData(body.back().first, body.back().second, 0);
-    body.pop_back();
-    if (body.size() < 3) dead = true;
+  if(!getGROWTH) body.pop_back();
+  if(getPOSION) {
+      map->setData(body.back().first, body.back().second, 0);
+      body.pop_back();
+      if(body.size() < 3) dead = true;
+  }
+  
+  // Gate 사용 끝났는지 확인
+  if(!wall.willClose && wall.getGateUsage()) {
+      std::pair<int, int> tail = body.back();
+      for(int i = 0; i < 4; i++) {
+          std::pair<int, int> tmp = std::make_pair(tail.first + axisID[i].first, tail.second + axisID[i].second);
+          if(tmp == inGateAxis) {
+              wall.willClose = true;
+              break;
+          }
+      }
+  }
+  else if(wall.willClose) {
+      wall.willClose = false;
+      wall.setGateUsage(false);
   }
 }

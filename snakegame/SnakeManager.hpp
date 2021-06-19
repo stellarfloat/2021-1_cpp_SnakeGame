@@ -3,20 +3,24 @@
 
 #include <deque>
 
+#include "GameConfig.hpp"
+#include "GateManager.hpp"
 #include "MapData.hpp"
 
 
 class Snake {
   MapData *map;
   bool dead = false;
-  char dir;
+  char dir; // 0: left, 1:up, 2:right, 3.down
   int size, headRow, headCol;
+  std::pair<int, int> inGateAxis;
   std::deque<std::pair<int, int>> body;
 public:
   Snake(MapData *map, int row = 10, int col = 9);
 
   bool isDead() { return dead; }
+  size_t length() { return body.size(); }
   void setDir();
-  void update();
+  void update(GateManager& wall);
 };
 #endif

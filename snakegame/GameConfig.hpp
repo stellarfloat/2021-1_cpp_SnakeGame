@@ -1,3 +1,6 @@
+#ifndef _GAMECONFIG_H_
+#define _GAMECONFIG_H_
+
 #include <curses.h>
 #include <ncurses.h>
 
@@ -31,3 +34,12 @@
 
 // gametick length (ms)
 #define GAMETICK_DELAY 250
+
+// gate movement ID
+const std::pair<int, int> axisID[] = {
+  std::make_pair(0, -1), 
+  std::make_pair(-1, 0), 
+  std::make_pair(0, 1), 
+  std::make_pair(1, 0)
+};
+#endif

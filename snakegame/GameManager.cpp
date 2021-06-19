@@ -34,11 +34,15 @@ GameManager::GameManager() {
 
   // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
   map = new MapData();
-  map->load("snakegame/LevelData/test.txt");
+  map->load("LevelData/test.txt");
 
   // pass the pointer to enable direct access to the map data
   item = new ItemManager(map);
   snake = new Snake(map);
+  gate = new GateManager(map);
+
+  // save time for later use
+  time_started = time(NULL);
 }
 
 GameManager::~GameManager() {
@@ -49,14 +53,15 @@ GameManager::~GameManager() {
 }
 
 void GameManager::update() {
+  if (snake->isDead()) { running = false; }
+
   t = clock();
   if (kbhit()) { snake->setDir(); }
   item->update(t);
-  snake->update();
+  gate->update(time(NULL), time_started, snake->length());
+  snake->update(*gate);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(GAMETICK_DELAY));
-
-  if (snake->isDead()) { running = false; }
 }
 
 void GameManager::render() {
