@@ -1,3 +1,5 @@
+// @author 한윤석(20203159)
+
 #include "kbhit.hpp"
 
 int kbhit(void) {

@@ -1,3 +1,5 @@
+// @author 추헌준(20203155)
+
 #ifndef _GAMECONFIG_H_
 #define _GAMECONFIG_H_
 
@@ -17,17 +19,6 @@
 #define COLOR_ID_ITEM_GROWTH 5
 #define COLOR_ID_ITEM_POISON 6
 #define COLOR_ID_GATE        7
-
-// initialize color pair
-// init_pair(pair_id, foreground_color, background_color)
-// init_pair(COLOR_ID_EMPTY, COLOR_BLACK, COLOR_BLACK);
-// init_pair(COLOR_ID_WALL, COLOR_BLACK, COLOR_WHITE);
-// init_pair(COLOR_ID_IWALL, COLOR_BLACK, COLOR_WHITE);
-// init_pair(COLOR_ID_SNAKE_HEAD, COLOR_WHITE, COLOR_GREEN);
-// init_pair(COLOR_ID_SNAKE_BODY, COLOR_BLACK, COLOR_GREEN);
-// init_pair(COLOR_ID_ITEM_GROWTH, COLOR_WHITE, COLOR_YELLOW);
-// init_pair(COLOR_ID_ITEM_POISON, COLOR_WHITE, COLOR_RED);
-// init_pair(COLOR_ID_GATE, COLOR_WHITE, COLOR_MAGENTA);
 
 // maximum item count on the map
 #define MAX_ITEM_SIZE 3

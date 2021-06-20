@@ -1,3 +1,5 @@
+// @author 한윤석(20203159)
+
 #include <ctime>
 
 #include "GateManager.hpp"
@@ -13,8 +15,8 @@ GateManager::GateManager(MapData *map) {
   delTime = time(NULL);
 }
 
-void GateManager::managerOn(int sz, time_t time_started, time_t t) {
-  if (sz >= 7 || (double)(time(NULL) - t) >= 20)
+void GateManager::managerOn(int sz, time_t time_started) {
+  if (sz >= 7 || (double)(time(NULL) - time_started) >= 20)
     onManager = true;
 }
 
@@ -47,7 +49,7 @@ void GateManager::delGate(time_t t) {
 
 void GateManager::update(time_t t, time_t time_started, size_t snake_length) {
   if (!(this->onManager)) { 
-    this->managerOn(snake_length, time_started, t); 
+    this->managerOn(snake_length, time_started); 
   } else {
     if (this->open && !this->usingGate) this->delGate(t);
     if (!this->open) this->makeGate(t);

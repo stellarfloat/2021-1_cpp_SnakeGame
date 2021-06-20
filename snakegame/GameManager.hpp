@@ -1,3 +1,5 @@
+// // @author 추헌준(20203155)
+
 #ifndef _GAMEMANAGER_H_
 #define _GAMEMANAGER_H_
 

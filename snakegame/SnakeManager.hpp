@@ -1,3 +1,5 @@
+// @authors 추헌준(20203155), 한윤석(20203159)
+
 #ifndef _SNAKEMANAGER_H_
 #define _SNAKEMANAGER_H_
 

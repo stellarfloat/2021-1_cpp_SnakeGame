@@ -1,3 +1,5 @@
+// @authors 추헌준(20203155), 한윤석(20203159)
+
 #include <iostream>
 #include <fstream>
 #include <deque>
