@@ -1,0 +1,2 @@
+all:
+	g++ snakegame/main.cpp snakegame/GameManager.cpp snakegame/MapData.cpp snakegame/ItemManager.cpp snakegame/GateManager.cpp snakegame/SnakeManager.cpp snakegame/kbhit.cpp -lncurses -o /tmp/snakegame.out && /tmp/snakegame.out
