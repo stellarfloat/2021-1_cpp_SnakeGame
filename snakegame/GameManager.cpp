@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <thread>
+#include <string>
 #include <ncurses.h>
 
 #include "GameManager.hpp"
@@ -80,6 +81,7 @@ GameManager::~GameManager() {
 }
 
 void GameManager::loadNextLevel() {
+  clear();
   this->load_level(++currentLevel); // possible memory leak
 }
 
@@ -112,7 +114,16 @@ void GameManager::update() {
 }
 
 void GameManager::render_scoreboard() {
-
+  int offset_x = 2 * WIDTH;
+  mvaddstr(0, offset_x + 2, "|>>| Score Board |<<|");
+  std::string tempstr = "   | B: " + std::to_string(snake->length());
+  mvaddstr(1, offset_x + 2, &tempstr[0]);
+  tempstr = "   | +: " + std::to_string(snake->getItemCountGrowth());
+  mvaddstr(2, offset_x + 2, &tempstr[0]);
+  tempstr = "   | -: " + std::to_string(snake->getItemCountPoison());
+  mvaddstr(3, offset_x + 2, &tempstr[0]);
+  tempstr =  "   | G: " + std::to_string(snake->getGateCount());
+  mvaddstr(4, offset_x + 2, &tempstr[0]);
 }
 
 void GameManager::render() {
@@ -166,6 +177,7 @@ void GameManager::render() {
       }
     }
   }
+  this->render_scoreboard();
   refresh();
 }
 
