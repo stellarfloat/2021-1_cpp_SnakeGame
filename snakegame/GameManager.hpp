@@ -11,7 +11,7 @@
 class GameManager {
   bool running = true;
   time_t time_started;
-  clock_t t;
+  time_t t;
   ItemManager *item;
   GateManager *gate;
   Snake *snake;

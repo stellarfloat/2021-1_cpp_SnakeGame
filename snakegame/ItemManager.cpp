@@ -21,7 +21,7 @@ ItemManager::ItemManager(MapData *map) {
   rndWeight = 0;
 }
 
-void ItemManager::makeItem(clock_t t) {
+void ItemManager::makeItem(time_t t) {
   int check = rand() % (5 - rndWeight);
   if (check != 0) {
     rndWeight++;
@@ -48,17 +48,17 @@ void ItemManager::makeItem(clock_t t) {
   }
 }
 
-void ItemManager::delItem(clock_t t) {
+void ItemManager::delItem(time_t t) {
   for (int i = 0; i < MAX_ITEM_SIZE; i++) {
-    double res = (double)(t - itemList[i].makeTime) / CLOCKS_PER_SEC;
-    if (map->getData(itemList[i].row, itemList[i].col) == 0 || res > 0.015) {
+    if(itemList[i].ttl == false) continue;
+    if (map->getData(itemList[i].row, itemList[i].col) == 0 || (double)(t - itemList[i].makeTime) >= 5.) {
       itemList[i].ttl = false;
       map->setData(itemList[i].row, itemList[i].col, 0);
     }
   }
 }
 
-void ItemManager::update(clock_t t) {
+void ItemManager::update(time_t t) {
   this->makeItem(t);
   this->delItem(t);
 }

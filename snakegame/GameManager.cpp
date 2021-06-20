@@ -106,9 +106,8 @@ void GameManager::update() {
     this->loadNextLevel();
   }
   std::this_thread::sleep_for(std::chrono::milliseconds(GAMETICK_DELAY));
-  t = clock();
   if (kbhit()) { snake->setDir(); }
-  item->update(t);
+  item->update(time(NULL));
   gate->update(time(NULL), time_started, snake->length());
   snake->update(*gate);
 }

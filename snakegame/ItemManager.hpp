@@ -15,7 +15,7 @@ struct ItemInfo {
   int info; // 0 GROWTH, 1 POISON
   bool ttl;
   bool first;
-  clock_t makeTime;
+  time_t makeTime;
 };
 
 class ItemManager {
@@ -24,8 +24,8 @@ class ItemManager {
   MapData *map;
 public:
   ItemManager(MapData *map);
-  void update(clock_t t);
-  void makeItem(clock_t t);
-  void delItem(clock_t t);
+  void update(time_t t);
+  void makeItem(time_t t);
+  void delItem(time_t t);
 };
 #endif
