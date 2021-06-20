@@ -24,6 +24,7 @@ public:
 	~GameManager();
 
   void showStartScreen();
+  void showResultScreen();
   void update();
   void render();
   bool isRunning();

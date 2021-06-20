@@ -17,10 +17,6 @@ GateManager *gate;
 int currentLevel = 0;
 
 void GameManager::load_level(int levelID) {
-  if (levelID > 4) {
-    // impl. game clear
-  }
-
   // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
   map = new MapData();
   map->load(levelMetaData[levelID].first);
@@ -41,6 +37,11 @@ void GameManager::load_level(int levelID) {
 
   // save time for later use
   time_started = time(NULL);
+
+  if (levelID > 4) { // game clear
+    running = false;
+    return;
+  }
 }
 
 GameManager::GameManager() {
@@ -86,6 +87,22 @@ void GameManager::showStartScreen() {
   this->render_game();
   mvaddstr(12, 27, "Snake Game");
   mvaddstr(19, 21, "Press any key to start");
+  getch();
+}
+
+void GameManager::showResultScreen() { 
+  clear();
+  this->load_level(0);
+  this->render_game();
+  if (currentLevel > 4) {
+    mvaddstr(12, 27, "GAME CLEAR");
+    mvaddstr(19, 21, "Press any key to exit");
+  } else {
+    std::string resultstr = "result: stage " + std::to_string(currentLevel);
+    mvaddstr(12, 27, "GAME OVER");
+    mvaddstr(15, 24, &resultstr[0]);
+    mvaddstr(19, 21, "Press any key to exit");
+  }
   getch();
 }
 
