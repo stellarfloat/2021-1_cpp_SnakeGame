@@ -9,10 +9,8 @@ Snake::Snake(MapData *map, int row, int col) {
   this->map = map;
 
   dir = 0;
-  // headRow = row;
-  // headCol = col;
-  headRow = 16;
-  headCol = 20;
+  headRow = row;
+  headCol = col;
   size = 5;
   for (int i = 0; i < size; i++)
     body.push_back(std::make_pair(headRow, headCol + i));
