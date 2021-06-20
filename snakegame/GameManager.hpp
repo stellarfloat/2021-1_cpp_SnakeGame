@@ -15,6 +15,9 @@ class GameManager {
   ItemManager *item;
   GateManager *gate;
   Snake *snake;
+
+  void load_level(int levelID);
+  void render_scoreboard();
 public:
   GameManager();
 	~GameManager();
@@ -22,6 +25,8 @@ public:
   void update();
   void render();
   bool isRunning();
+  bool atMissionSuccess();
+  void loadNextLevel();
 
 };
 #endif

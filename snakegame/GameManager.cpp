@@ -10,6 +10,37 @@
 
 
 MapData *map;
+ItemManager *item;
+Snake *snake;
+GateManager *gate;
+int currentLevel = 1;
+
+void GameManager::load_level(int levelID) {
+  if (levelID > 4) {
+    // impl. game clear
+  }
+
+  // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
+  map = new MapData();
+  map->load(levelMetaData[levelID].first);
+
+  // pass the pointer to enable direct access to the map data
+  item = new ItemManager(map);
+  snake = new Snake(map, levelMetaData[levelID].second.first, levelMetaData[levelID].second.second);
+  gate = new GateManager(map);
+
+  // load map data to GateManager
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      if (map->getData(i, j) == 1) {
+        gate->wallList.push_back(std::make_pair(i, j));
+      }
+    }
+  }
+
+  // save time for later use
+  time_started = time(NULL);
+}
 
 GameManager::GameManager() {
   // initialize curses routines
@@ -36,45 +67,45 @@ GameManager::GameManager() {
   init_pair(COLOR_ID_ITEM_POISON, COLOR_WHITE, COLOR_RED);
   init_pair(COLOR_ID_GATE, COLOR_WHITE, COLOR_MAGENTA);
 
-  // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
-  map = new MapData();
-  map->load("snakegame/LevelData/map4.txt");
-
-  // pass the pointer to enable direct access to the map data
-  item = new ItemManager(map);
-  snake = new Snake(map);
-  gate = new GateManager(map);
-
-  // load map data to GateManager
-  for (int i = 0; i < HEIGHT; i++) {
-    for (int j = 0; j < WIDTH; j++) {
-      if (map->getData(i, j) == 1) {
-        gate->wallList.push_back(std::make_pair(i, j));
-      }
-    }
-  }
-
-  // save time for later use
-  time_started = time(NULL);
+  this->load_level(currentLevel);
 
   srand(time(NULL));
 }
 
 GameManager::~GameManager() {
-  //delete snake;
+  delete snake;
   delete item;
   delete map;
   endwin();
 }
 
+void GameManager::loadNextLevel() {
+  this->load_level(++currentLevel); // possible memory leak
+}
+
+bool GameManager::atMissionSuccess() {
+  if (time(NULL) - time_started > 5) { // temp. game level transition in every 5 sec
+    return true;
+  } else {
+    return false;
+  }
+}
+
 void GameManager::update() {
   if (snake->isDead()) { running = false; }
+  if (this->atMissionSuccess()) { 
+    this->loadNextLevel();
+  }
   std::this_thread::sleep_for(std::chrono::milliseconds(GAMETICK_DELAY));
   t = clock();
   if (kbhit()) { snake->setDir(); }
   item->update(t);
   gate->update(time(NULL), time_started, snake->length());
   snake->update(*gate);
+}
+
+void GameManager::render_scoreboard() {
+
 }
 
 void GameManager::render() {
