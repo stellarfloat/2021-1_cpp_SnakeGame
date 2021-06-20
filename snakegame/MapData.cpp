@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "MapData.hpp"
+#include "GateManager.hpp"
 
 
 MapData::MapData() {

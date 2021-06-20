@@ -41,8 +41,19 @@ GameManager::GameManager() {
   snake = new Snake(map);
   gate = new GateManager(map);
 
+  // load map data to GateManager
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      if (map->getData(i, j) == 1) {
+        gate->wallList.push_back(std::make_pair(i, j));
+      }
+    }
+  }
+
   // save time for later use
   time_started = time(NULL);
+
+  srand(time(NULL));
 }
 
 GameManager::~GameManager() {

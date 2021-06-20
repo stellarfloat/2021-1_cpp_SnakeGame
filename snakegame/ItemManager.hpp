@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "MapData.hpp"
+#include "GameConfig.hpp"
 
 
 struct ItemInfo {
