@@ -34,7 +34,7 @@ GameManager::GameManager() {
 
   // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
   map = new MapData();
-  map->load("LevelData/test.txt");
+  map->load("snakegame/LevelData/test.txt");
 
   // pass the pointer to enable direct access to the map data
   item = new ItemManager(map);
