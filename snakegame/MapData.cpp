@@ -25,8 +25,8 @@ void MapData::load(std::string dir) {
 
   int h = 0;
   while (h < HEIGHT) {// !lv_data.eof()
-    char temp[25];
-    lv_data.getline(temp, 25);
+    char temp[100];
+    lv_data.getline(temp, 100);
     for (int i = 0; i < WIDTH; i++)
       map_data[h][i] = (temp[i] - '0');
     h++;

@@ -16,7 +16,7 @@ class Snake {
   std::pair<int, int> inGateAxis;
   std::deque<std::pair<int, int>> body;
 public:
-  Snake(MapData *map, int row = 10, int col = 9);
+  Snake(MapData *map, int row = 16, int col = 14);
 
   bool isDead() { return dead; }
   size_t length() { return body.size(); }

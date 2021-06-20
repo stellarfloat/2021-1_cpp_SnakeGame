@@ -5,8 +5,8 @@
 #include <ncurses.h>
 
 // map size definition
-#define WIDTH 21
-#define HEIGHT 21
+#define WIDTH 32
+#define HEIGHT 32
 
 // definition for ncurses color pair id
 #define COLOR_ID_EMPTY       0
