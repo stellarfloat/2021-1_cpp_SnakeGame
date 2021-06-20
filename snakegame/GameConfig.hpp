@@ -45,6 +45,8 @@ const int levelMissionData[5][4] = {
   {11, 7, 7, 4}, // level 4, map4.txt
 };
 
+// level metadata
+// (levelPath, snakePos)
 const std::pair<std::string, std::pair<int, int>> levelMetaData[] = {
   std::make_pair("", std::make_pair(0, 0)), // index 0 is empty
   std::make_pair("snakegame/LevelData/map1.txt", std::make_pair(3, 13)), 
