@@ -14,7 +14,7 @@ MapData *map;
 ItemManager *item;
 Snake *snake;
 GateManager *gate;
-int currentLevel = 1;
+int currentLevel = 0;
 
 void GameManager::load_level(int levelID) {
   if (levelID > 4) {
@@ -76,16 +76,35 @@ GameManager::GameManager() {
 GameManager::~GameManager() {
   delete snake;
   delete item;
+  delete gate;
   delete map;
   endwin();
 }
 
+void GameManager::showStartScreen() { 
+  this->load_level(0);
+  this->render_game();
+  mvaddstr(12, 27, "Snake Game");
+  mvaddstr(19, 21, "Press any key to start");
+  getch();
+}
+
 void GameManager::loadNextLevel() {
   clear();
-  this->load_level(++currentLevel); // possible memory leak
+  delete snake;
+  delete item;
+  delete gate;
+  delete map;
+  this->load_level(++currentLevel);
 }
 
 bool GameManager::atMissionSuccess() {
+  // // initial game start
+  // if (currentLevel == 0) { 
+  //   getch();
+  //   return true;
+  // }
+
   // levelMissionData
   // {bodyLength, itemGrowth, itemPoison, gateUsed}
   if (levelMissionData[currentLevel][0] <= snake->length()) {
@@ -148,9 +167,8 @@ void GameManager::render_scoreboard() {
   mvaddstr(12, offset_x + 2, "---------------------");
 }
 
-void GameManager::render() {
-  //clear();
-  for (int i = 0; i < HEIGHT; i++) {
+void GameManager::render_game() { 
+for (int i = 0; i < HEIGHT; i++) {
     for (int j = 0; j < WIDTH; j++) {
       switch (map->getData(i, j)) {
       case 0:
@@ -199,6 +217,11 @@ void GameManager::render() {
       }
     }
   }
+}
+
+void GameManager::render() {
+  //clear();
+  this->render_game();
   this->render_scoreboard();
   refresh();
 }

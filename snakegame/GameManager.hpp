@@ -18,10 +18,12 @@ class GameManager {
 
   void load_level(int levelID);
   void render_scoreboard();
+  void render_game();
 public:
   GameManager();
 	~GameManager();
 
+  void showStartScreen();
   void update();
   void render();
   bool isRunning();

@@ -21,6 +21,7 @@
 int main() {
   GameManager *game = new GameManager();
 
+  game->showStartScreen();
   while (game->isRunning()) {
     game->update();
     game->render();
