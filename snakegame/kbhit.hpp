@@ -1,3 +1,5 @@
+// @author 한윤석(20203159)
+
 #ifndef _KBHIT_
 #define _KBHIT_
 

@@ -1,3 +1,5 @@
+// @author 추헌준(20203155)
+
 #ifndef _MAPDATA_H_
 #define _MAPDATA_H_
 

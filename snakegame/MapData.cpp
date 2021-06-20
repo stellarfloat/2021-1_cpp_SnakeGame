@@ -1,3 +1,5 @@
+// @author 추헌준(20203155)
+
 #include <fstream>
 #include <iostream>
 
