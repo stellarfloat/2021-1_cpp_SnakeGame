@@ -15,6 +15,9 @@ class Snake {
   bool dead = false;
   char dir; // 0: left, 1:up, 2:right, 3.down
   int size, headRow, headCol;
+  int itemCountGrowth = 0; 
+  int itemCountPoison = 0;
+  int gateCount = 0;
   std::pair<int, int> inGateAxis;
   std::deque<std::pair<int, int>> body;
 public:
@@ -24,5 +27,8 @@ public:
   size_t length() { return body.size(); }
   void setDir();
   void update(GateManager& wall);
+  int getItemCountGrowth() { return itemCountGrowth; }
+  int getItemCountPoison() { return itemCountPoison; }
+  int getGateCount() { return gateCount; }
 };
 #endif

@@ -84,11 +84,18 @@ void GameManager::loadNextLevel() {
 }
 
 bool GameManager::atMissionSuccess() {
-  if (time(NULL) - time_started > 5) { // temp. game level transition in every 5 sec
-    return true;
-  } else {
-    return false;
+  // levelMissionData
+  // {bodyLength, itemGrowth, itemPoison, gateUsed}
+  if (levelMissionData[currentLevel][0] <= snake->length()) {
+    if (levelMissionData[currentLevel][1] <= snake->getItemCountGrowth()) {
+      if (levelMissionData[currentLevel][2] <= snake->getItemCountPoison()) {
+        if (levelMissionData[currentLevel][3] <= snake->getGateCount()) {
+          return true;
+        }
+      }
+    }
   }
+  return false;
 }
 
 void GameManager::update() {

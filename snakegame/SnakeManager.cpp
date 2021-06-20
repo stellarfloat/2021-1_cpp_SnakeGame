@@ -55,6 +55,7 @@ void Snake::update(GateManager& wall) {
   }
   // Gate 사용
   if(map_data_id == 7) {
+      gateCount++;
       inGateAxis = std::make_pair(row, col);
       body.pop_front();
       wall.setGateUsage(true);
@@ -77,8 +78,8 @@ void Snake::update(GateManager& wall) {
   // 아이템 획득 판단
   row = body.front().first, col = body.front().second;
   map_data_id = map->getData(row, col);
-  if(map_data_id == 5) getGROWTH = true;
-  if(map_data_id == 6) getPOSION = true;
+  if(map_data_id == 5) getGROWTH = true; itemCountGrowth++;
+  if(map_data_id == 6) getPOSION = true; itemCountPoison++;
   map->setData(body.front().first, body.front().second, 3);
   for(int i = 1; i < body.size() - 1; i++)
       map->setData(body[i].first, body[i].second, 4);
