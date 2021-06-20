@@ -21,6 +21,8 @@ GameManager::GameManager() {
   keypad(stdscr, TRUE);
   // start ncurses color
   start_color();
+
+  curs_set(0);
   // initialize color pair
   // init_pair(pair_id, foreground_color, background_color)
   init_pair(COLOR_ID_EMPTY, COLOR_BLACK, COLOR_BLACK);
@@ -65,14 +67,12 @@ GameManager::~GameManager() {
 
 void GameManager::update() {
   if (snake->isDead()) { running = false; }
-
+  std::this_thread::sleep_for(std::chrono::milliseconds(GAMETICK_DELAY));
   t = clock();
   if (kbhit()) { snake->setDir(); }
   item->update(t);
   gate->update(time(NULL), time_started, snake->length());
   snake->update(*gate);
-
-  std::this_thread::sleep_for(std::chrono::milliseconds(GAMETICK_DELAY));
 }
 
 void GameManager::render() {
