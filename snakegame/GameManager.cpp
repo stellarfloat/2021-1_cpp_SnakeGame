@@ -115,15 +115,38 @@ void GameManager::update() {
 
 void GameManager::render_scoreboard() {
   int offset_x = 2 * WIDTH;
-  mvaddstr(0, offset_x + 2, "|>>| Score Board |<<|");
+  mvaddstr(0, offset_x + 2, "---------------------");
+  mvaddstr(1, offset_x + 2, "|>>| Score Board |<<|");
   std::string tempstr = "   | B: " + std::to_string(snake->length());
-  mvaddstr(1, offset_x + 2, &tempstr[0]);
-  tempstr = "   | +: " + std::to_string(snake->getItemCountGrowth());
   mvaddstr(2, offset_x + 2, &tempstr[0]);
-  tempstr = "   | -: " + std::to_string(snake->getItemCountPoison());
+  tempstr = "   | +: " + std::to_string(snake->getItemCountGrowth());
   mvaddstr(3, offset_x + 2, &tempstr[0]);
-  tempstr =  "   | G: " + std::to_string(snake->getGateCount());
+  tempstr = "   | -: " + std::to_string(snake->getItemCountPoison());
   mvaddstr(4, offset_x + 2, &tempstr[0]);
+  tempstr =  "   | G: " + std::to_string(snake->getGateCount());
+  mvaddstr(5, offset_x + 2, &tempstr[0]);
+  for (int i = 2; i <= 5; i++) mvaddch(i, offset_x + 19, '|');
+
+  mvaddstr(6, offset_x + 2, "---------------------");
+  mvaddstr(7, offset_x + 2, "|>>|   Mission   |<<|");
+  tempstr = "   | B: " + std::to_string(levelMissionData[currentLevel][0]);
+  mvaddstr(8, offset_x + 2, &tempstr[0]);
+  tempstr = levelMissionData[currentLevel][0] <= snake->length() ? "(v)" : "( )";
+  mvaddstr(8, offset_x + 15, &tempstr[0]);
+  tempstr = "   | +: " + std::to_string(levelMissionData[currentLevel][1]);
+  mvaddstr(9, offset_x + 2, &tempstr[0]);
+  tempstr = levelMissionData[currentLevel][1] <= snake->getItemCountGrowth() ? "(v)" : "( )";
+  mvaddstr(9, offset_x + 15, &tempstr[0]);
+  tempstr = "   | -: " + std::to_string(levelMissionData[currentLevel][2]);
+  mvaddstr(10, offset_x + 2, &tempstr[0]);
+  tempstr = levelMissionData[currentLevel][2] <= snake->getItemCountPoison() ? "(v)" : "( )";
+  mvaddstr(10, offset_x + 15, &tempstr[0]);
+  tempstr = "   | G: " + std::to_string(levelMissionData[currentLevel][3]);
+  mvaddstr(11, offset_x + 2, &tempstr[0]);
+  tempstr = levelMissionData[currentLevel][3] <= snake->getGateCount() ? "(v)" : "( )";
+  mvaddstr(11, offset_x + 15, &tempstr[0]);
+  for (int i = 7; i <= 11; i++) mvaddch(i, offset_x + 19, '|');
+  mvaddstr(12, offset_x + 2, "---------------------");
 }
 
 void GameManager::render() {
