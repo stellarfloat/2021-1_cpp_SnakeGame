@@ -24,8 +24,6 @@
 // maximum item count on the map
 #define MAX_ITEM_SIZE 3
 
-// gametick length (ms)
-#define GAMETICK_DELAY 250
 
 // gate movement ID
 const std::pair<int, int> axisID[] = {

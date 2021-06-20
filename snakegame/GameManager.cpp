@@ -16,6 +16,10 @@ Snake *snake;
 GateManager *gate;
 int currentLevel = 0;
 
+// gametick length (ms)
+int GAMETICK_DELAY = 250;
+
+
 void GameManager::load_level(int levelID) {
   // initialize and load map data, assume cwd is 2021-1_cpp_SnakeGame/
   map = new MapData();
@@ -86,8 +90,26 @@ void GameManager::showStartScreen() {
   this->load_level(0);
   this->render_game();
   mvaddstr(12, 27, "Snake Game");
-  mvaddstr(19, 21, "Press any key to start");
-  getch();
+  mvaddstr(15, 15, "Press the key to choose difficulty");
+  mvaddstr(17, 28, "1. EASY");
+  mvaddstr(18, 28, "2. NORMAL");
+  mvaddstr(19, 28, "3. HARD");
+
+  choice:
+  int option = getch();
+  if (option == '1') {        // EASY
+    GAMETICK_DELAY = 250;
+    return;
+  } else if (option == '2') { // NORMAL
+    GAMETICK_DELAY = 175;
+    return;
+  } else if (option == '3') { // HARD
+    GAMETICK_DELAY = 90;
+    return;
+  } else {
+    goto choice;
+  }
+  
 }
 
 void GameManager::showResultScreen() { 
